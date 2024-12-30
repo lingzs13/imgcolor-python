@@ -12,7 +12,7 @@ from gevent import pywsgi
 
 # 读取配置文件
 config = configparser.ConfigParser()
-config.read('data/config.ini')
+config.read('static/config.ini')
 
 # 初始化PostgreSQL数据库连接池
 db_pool = None
