@@ -8,6 +8,7 @@ import io
 from colorthief import ColorThief
 import imageio
 import redis
+from gevent import pywsgi
 
 # 读取配置文件
 config = configparser.ConfigParser()
@@ -40,6 +41,7 @@ else:
 
 app = Flask(__name__)
 
+
 # 从连接池中获取连接并执行查询
 def query_image(url):
     if db_pool:
@@ -53,6 +55,7 @@ def query_image(url):
         finally:
             db_pool.putconn(conn)
 
+
 # 从连接池中获取连接并执行插入
 def insert_image(url, color):
     if db_pool:
@@ -63,6 +66,7 @@ def insert_image(url, color):
             conn.commit()
         finally:
             db_pool.putconn(conn)
+
 
 @app.route('/api/Imgcolor', methods=['GET'])
 def get_dominant_color_api():
@@ -120,4 +124,5 @@ def get_dominant_color_api():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    server = pywsgi.WSGIServer(('127.0.0.1', 5000), app)
+    server.serve_forever()
